@@ -40,7 +40,7 @@ class BackupMinify_Minifier {
 		}
 
 		if (!is_executable($this->imageConvertBinary)) {
-			throw new Exception("The image convert executable ". $this->imageConvertBinary." is not existend or executable for the script.");
+			throw new Exception("The image convert executable ". $this->imageConvertBinary." does not exist or cannot be executed.");
 		}
 
 		// force ending slash
@@ -48,10 +48,10 @@ class BackupMinify_Minifier {
 		$targetPath = rtrim($targetPath, '/') . '/';
 
 		if (!is_dir($sourcePath)) {
-			throw new Exception("Could not find source dir $sourcePath");
+			throw new Exception("Could not find source dir '$sourcePath'");
 		}
 		if (!is_dir($targetPath)) {
-			throw new Exception("Could not find source dir $targetPath");
+			throw new Exception("Could not find target dir '$targetPath'");
 		}
 		$this->sourcePath = $sourcePath;
 		$this->targetPath = $targetPath;
