@@ -96,6 +96,11 @@ class BackupMinify_Minifier {
 				);
 				continue;
 			}
+            if ($cur->isLink()) {
+                symlink($targetFileName, $cur->getLinkTarget());
+                continue;
+            }
+            
 			$pathInfo = pathinfo($filename);
 			$dirname = dirname($targetFileName);
 			if (!is_dir($dirname)) {
