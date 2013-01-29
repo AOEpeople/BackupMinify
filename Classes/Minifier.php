@@ -12,8 +12,9 @@ class BackupMinify_Minifier {
 	protected $sourcePath;
 	protected $targetPath;
 	protected $imageConvertBinary = '/usr/bin/convert';
-	protected $imageConvertCommandTemplate = ' -quality 1 "%1$s" "%2$s"';
+	protected $imageConvertCommandTemplate = ' -quality 1 -colors 16 "%1$s" "%2$s"';
 	protected $imageFileTypes = array('jpg', 'png');
+	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
 	protected $totalNumberOfFiles;
 	protected $statistics = array(
 		'total_files' => 0,
@@ -121,6 +122,9 @@ class BackupMinify_Minifier {
 			if ($this->convertPDFFiles($pathInfo, $filename, $targetFileName)) {
 				continue; //next file
 			}
+			if ($this->replaceMediaFilesByEmptyFile($pathInfo, $filename, $targetFileName)) {
+				continue; //next file
+			}
 
 
 			// Creating a hard link for non-image files
@@ -167,6 +171,40 @@ class BackupMinify_Minifier {
 		$eta = $this->getEta($conversionsPerMinute);
 
 		printf("[%s/%s] Converted PDF file: %s (%s cpm, ETA: %s:%02s h)\n",
+			$this->statistics['total_files'],
+			$this->getTotalNumberOfFiles(),
+			$filename,
+			round($conversionsPerMinute),
+			(int)($eta / 60),
+				$eta % 60
+		);
+		return true;
+	}
+
+	/**
+	 * @param array $pathInfo
+	 * @param $filename
+	 * @param $targetFileName
+	 * @return bool
+	 */
+	protected function replaceMediaFilesByEmptyFile(array $pathInfo, $filename, $targetFileName) {
+		if (!in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
+			return false;
+		}
+
+		$this->statistics['converted']++;
+
+		$startTime = microtime(true);
+
+		// Convert...
+		copy(dirname(__FILE__).'/../Resources/emptyfile.txt', $targetFileName);
+
+		$this->putDurationOnStack(microtime(true) - $startTime);
+
+		$conversionsPerMinute = $this->getConversionsPerMinute();
+		$eta = $this->getEta($conversionsPerMinute);
+
+		printf("[%s/%s] Converted Media file: %s (%s cpm, ETA: %s:%02s h)\n",
 			$this->statistics['total_files'],
 			$this->getTotalNumberOfFiles(),
 			$filename,
