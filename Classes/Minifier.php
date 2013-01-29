@@ -117,8 +117,17 @@ class BackupMinify_Minifier {
 				continue; //next file
 			}
 
+			
 			// Creating a hard link for non-image files
-			link($filename, $targetFileName);
+			$linkResult = link($filename, $targetFileName);
+			if (!$linkResult) {
+				printf("Linking file failed: %s to %s \n",$filename,$targetFileName);
+				$copyResult = copy($filename, $targetFileName);
+				if (!$copyResult) {
+					throw new Exception( sprintf("Copy file failed too: %s to %s \n",$filename,$targetFileName) );
+				}
+			}
+
 			$this->statistics['copied']++;
 			printf("[%s/%s] Copying file: %s\n",
 				$this->statistics['total_files'],
