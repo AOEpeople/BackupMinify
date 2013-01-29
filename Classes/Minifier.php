@@ -23,6 +23,11 @@ class BackupMinify_Minifier {
 		'copied' => 0
 	);
 	protected $durationsStack = array();
+	protected $skipExistingFiles = true;
+
+	public function setSkipExistingFiles($skipExistingFiles) {
+		$this->skipExistingFiles = (bool) $skipExistingFiles;
+	}
 
 	/**
 	 * Constructor
@@ -87,7 +92,7 @@ class BackupMinify_Minifier {
 			$relativeFileName = str_replace($this->sourcePath, '', $filename);
 			$targetFileName = $this->targetPath . $relativeFileName;
 			$this->statistics['total_files']++;
-			if (is_file($targetFileName)) {
+			if (is_file($targetFileName) && $this->skipExistingFiles) {
 				$this->statistics['skipped']++;
 				printf("[%s/%s] Skipping file: %s (already exists)\n",
 					$this->statistics['total_files'],

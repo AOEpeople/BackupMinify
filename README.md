@@ -8,6 +8,9 @@ This can be useful if you want to setup development or staging environment and d
 Usage:
  php Bin/minfiy.php --source=/assetbackup/production --target=/assetbackup/minified_production
 
+ Optional Parameters:
+ --skipExistingFiles=0		By default existing files are not copied to target anymore.
+
 Todo:
 =======
 * Replace Videos as well
