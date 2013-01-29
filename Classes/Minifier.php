@@ -117,9 +117,9 @@ class BackupMinify_Minifier {
 				continue; //next file
 			}
 
-			
+
 			// Creating a hard link for non-image files
-			$linkResult = link($filename, $targetFileName);
+			$linkResult = @link($filename, $targetFileName);
 			if (!$linkResult) {
 				printf("Linking file failed: %s to %s \n",$filename,$targetFileName);
 				$copyResult = copy($filename, $targetFileName);
