@@ -16,6 +16,7 @@ class BackupMinify_Minifier {
 	protected $imageFileTypes = array('jpg', 'png');
 	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
 	protected $totalNumberOfFiles;
+	protected $quiteMode=false;
 	protected $statistics = array(
 		'total_files' => 0,
 		'skipped' => 0,
@@ -29,6 +30,11 @@ class BackupMinify_Minifier {
 	public function setSkipExistingFiles($skipExistingFiles) {
 		$this->skipExistingFiles = (bool) $skipExistingFiles;
 	}
+
+	public function setQuiteMode($quiteMode) {
+		$this->quiteMode = $quiteMode;
+	}
+
 
 	/**
 	 * Constructor
@@ -95,15 +101,15 @@ class BackupMinify_Minifier {
 			$this->statistics['total_files']++;
 			if (is_file($targetFileName) && $this->skipExistingFiles) {
 				$this->statistics['skipped']++;
-				printf("[%s/%s] Skipping file: %s (already exists)\n",
+				$this->out(sprintf("[%s/%s] Skipping file: %s (already exists)\n",
 					$this->statistics['total_files'],
 					$this->getTotalNumberOfFiles(),
 					$filename
-				);
+				));
 				continue;
 			}
             if ($cur->isLink()) {
-                echo "Symlink created: $targetFileName\n";
+				$this->out( "Symlink created: $targetFileName -> ".$cur->getLinkTarget()." \n" );
                 symlink($targetFileName, $cur->getLinkTarget());
                 continue;
             }
@@ -112,7 +118,7 @@ class BackupMinify_Minifier {
 			$dirname = dirname($targetFileName);
 			if (!is_dir($dirname)) {
 				$this->statistics['directories_created']++;
-				echo "Creating directory: $dirname\n";
+				$this->out( "Creating directory: $dirname\n");
 				mkdir($dirname, 0777, true);
 			}
 
@@ -130,7 +136,7 @@ class BackupMinify_Minifier {
 			// Creating a hard link for non-image files
 			$linkResult = @link($filename, $targetFileName);
 			if (!$linkResult) {
-				printf("Linking file failed: %s to %s \n",$filename,$targetFileName);
+				$this->out(sprintf("Linking file failed: %s to %s \n",$filename,$targetFileName));
 				$copyResult = copy($filename, $targetFileName);
 				if (!$copyResult) {
 					throw new Exception( sprintf("Copy file failed too: %s to %s \n",$filename,$targetFileName) );
@@ -138,13 +144,25 @@ class BackupMinify_Minifier {
 			}
 
 			$this->statistics['copied']++;
-			printf("[%s/%s] Copying file: %s\n",
+			$this->out(sprintf("[%s/%s] Copying file: %s\n",
 				$this->statistics['total_files'],
 				$this->getTotalNumberOfFiles(),
 				$filename
-			);
+			));
 
 		}
+		printf("Ready! Total Files %s. Processed %s files per minute.",$this->statistics['total_files'],round($this->getConversionsPerMinute()));
+	}
+
+	/**
+	 * @param $message
+	 * @param int $logLevel
+	 */
+	protected function out($message,$logLevel=1) {
+		if ($this->quiteMode && $logLevel == 1) {
+			return;
+		}
+		echo $message;
 	}
 
 	/**
@@ -170,14 +188,11 @@ class BackupMinify_Minifier {
 		$conversionsPerMinute = $this->getConversionsPerMinute();
 		$eta = $this->getEta($conversionsPerMinute);
 
-		printf("[%s/%s] Converted PDF file: %s (%s cpm, ETA: %s:%02s h)\n",
+		$this->out(sprintf("[%s/%s] Converted PDF file: %s\n",
 			$this->statistics['total_files'],
 			$this->getTotalNumberOfFiles(),
-			$filename,
-			round($conversionsPerMinute),
-			(int)($eta / 60),
-				$eta % 60
-		);
+			$filename
+		));
 		return true;
 	}
 
@@ -204,14 +219,14 @@ class BackupMinify_Minifier {
 		$conversionsPerMinute = $this->getConversionsPerMinute();
 		$eta = $this->getEta($conversionsPerMinute);
 
-		printf("[%s/%s] Converted Media file: %s (%s cpm, ETA: %s:%02s h)\n",
+		$this->out(sprintf("[%s/%s] Converted Media file: %s (%s cpm, ETA: %s:%02s h)\n",
 			$this->statistics['total_files'],
 			$this->getTotalNumberOfFiles(),
 			$filename,
 			round($conversionsPerMinute),
 			(int)($eta / 60),
 				$eta % 60
-		);
+		));
 		return true;
 	}
 
@@ -238,14 +253,14 @@ class BackupMinify_Minifier {
 		$conversionsPerMinute = $this->getConversionsPerMinute();
 		$eta = $this->getEta($conversionsPerMinute);
 
-		printf("[%s/%s] Converted Image file: %s (%s cpm, ETA: %s:%02s h)\n",
+		$this->out(sprintf("[%s/%s] Converted Image file: %s (%s cpm, ETA: %s:%02s h)\n",
 			$this->statistics['total_files'],
 			$this->getTotalNumberOfFiles(),
 			$filename,
 			round($conversionsPerMinute),
 			(int)($eta / 60),
 				$eta % 60
-		);
+		));
 		return true;
 	}
 

@@ -9,7 +9,10 @@ Usage:
  php Bin/minfiy.php --source=/assetbackup/production --target=/assetbackup/minified_production
 
  Optional Parameters:
+
  --skipExistingFiles=0		By default existing files are not copied to target anymore.
+
+ --quiteMode=1			No output of log infos.
 
 Todo:
 =======
