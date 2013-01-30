@@ -16,7 +16,7 @@ try {
 	if (isset($parsedArguments['skipExistingFiles']) && $parsedArguments['skipExistingFiles'] == 0) {
 		$minifier->setSkipExistingFiles(false);
 	}
-	if (isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 0) {
+	if (isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) {
 		$minifier->setQuiteMode(true);
 	}
 	$minifier->run();
