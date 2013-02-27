@@ -95,6 +95,11 @@ class BackupMinify_Minifier {
 	 */
 	public function run() {
 		foreach ($this->getIterator() as $filename => $cur) { /* @var $cur FileInfoSpl */
+			if ($cur->isLink()) {
+				$this->out( "Symlink created: $targetFileName -> ".$cur->getLinkTarget()." \n" );
+				symlink($cur->getLinkTarget(), $targetFileName);
+				continue;
+			}
 			if ($cur->isDir()) { continue; }
 			$relativeFileName = str_replace($this->sourcePath, '', $filename);
 			$targetFileName = $this->targetPath . $relativeFileName;
@@ -108,11 +113,7 @@ class BackupMinify_Minifier {
 				));
 				continue;
 			}
-            if ($cur->isLink()) {
-				$this->out( "Symlink created: $targetFileName -> ".$cur->getLinkTarget()." \n" );
-                symlink($cur->getLinkTarget(), $targetFileName);
-                continue;
-            }
+
 
 			$pathInfo = pathinfo($filename);
 			$dirname = dirname($targetFileName);
