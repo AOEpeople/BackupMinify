@@ -209,7 +209,7 @@ class BackupMinify_Minifier {
 	 * @return bool
 	 */
 	protected function replaceMediaFilesByEmptyFile(array $pathInfo, $filename, $targetFileName) {
-		if (!is_array($pathInfo) && !array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
+		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
 			return false;
 		}
 
