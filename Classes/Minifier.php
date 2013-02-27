@@ -95,7 +95,10 @@ class BackupMinify_Minifier {
 	 */
 	public function run() {
 		foreach ($this->getIterator() as $filename => $cur) { /* @var $cur FileInfoSpl */
-			if ($cur->isDir()) { continue; }
+			if ($cur->isDir() && !$cur->isLink()) { 
+				continue;
+			}
+			
 			$relativeFileName = str_replace($this->sourcePath, '', $filename);
 			$targetFileName = $this->targetPath . $relativeFileName;
 			$this->statistics['total_files']++;
