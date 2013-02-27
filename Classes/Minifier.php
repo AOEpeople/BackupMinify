@@ -110,7 +110,7 @@ class BackupMinify_Minifier {
 			}
             if ($cur->isLink()) {
 				$this->out( "Symlink created: $targetFileName -> ".$cur->getLinkTarget()." \n" );
-                symlink($targetFileName, $cur->getLinkTarget());
+                symlink($cur->getLinkTarget(), $targetFileName);
                 continue;
             }
 
