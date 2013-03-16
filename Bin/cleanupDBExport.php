@@ -78,12 +78,15 @@ function processDirectory($sourceDir, $deletableFiles) {
 }
 
 /**
+ * parseArgs Command Line Interface (CLI) utility function.
  * Parse command-line arguments into array
  *
  * @static
  * @param null $argv
  * @return array
- * @see http://www.php.net/manual/de/features.commandline.php#93086
+ * @usage               $args = parseArgs($_SERVER['argv']);
+ * @author              Patrick Fisher <patrick@pwfisher.com>
+ * @see                 https://github.com/pwfisher/CommandLine.php
  */
 function parseArgs($argv = null) {
     if (is_null($argv)) {
