@@ -243,7 +243,7 @@ class BackupMinify_Minifier {
 	 * @return bool
 	 */
 	protected function convertImageFiles(array $pathInfo, $filename, $targetFileName) {
-		if (!in_array(strtolower($pathInfo['extension']), $this->imageFileTypes)) {
+		if (array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->imageFileTypes)) {
 			return false;
 		}
 
