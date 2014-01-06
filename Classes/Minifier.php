@@ -281,11 +281,21 @@ class BackupMinify_Minifier {
 	}
 
 	protected function getAvgDuration() {
-		return array_sum($this->durationsStack) / count($this->durationsStack);
+		$count = count($this->durationsStack);
+		if ($count > 0) {
+			return array_sum($this->durationsStack) / $count;
+		} else {
+			return false;
+		}
 	}
 
 	protected function getConversionsPerMinute() {
-		return 60 / $this->getAvgDuration();
+		$avgDuration = $this->getAvgDuration();
+		if ($avgDuration) {
+			return 60 / $avgDuration;
+		} else {
+			return false;
+		}
 	}
 
 	protected function getEta($conversionsPerMinute) {
