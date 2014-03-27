@@ -16,8 +16,9 @@ try {
 	if (isset($parsedArguments['skipExistingFiles']) && $parsedArguments['skipExistingFiles'] == 0) {
 		$minifier->setSkipExistingFiles(false);
 	}
-	if (isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) {
-		$minifier->setQuiteMode(true);
+	if (isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) echo 'Typo detected. Please change "quiteMode" option to "quietMode".';
+	if ((isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) || (isset($parsedArguments['quietMode']) && $parsedArguments['quietMode'] == 1)) {
+		$minifier->setQuietMode(true);
 	}
 	$minifier->run();
 } catch (Exception $e) {

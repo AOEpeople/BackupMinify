@@ -16,7 +16,7 @@ class BackupMinify_Minifier {
 	protected $imageFileTypes = array('jpg', 'png');
 	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
 	protected $totalNumberOfFiles;
-	protected $quiteMode=false;
+	protected $quietMode=false;
 	protected $statistics = array(
 		'total_files' => 0,
 		'skipped' => 0,
@@ -31,8 +31,8 @@ class BackupMinify_Minifier {
 		$this->skipExistingFiles = (bool) $skipExistingFiles;
 	}
 
-	public function setQuiteMode($quiteMode) {
-		$this->quiteMode = $quiteMode;
+	public function setQuietMode($quietMode) {
+		$this->quietMode = $quietMode;
 	}
 
 
@@ -165,7 +165,7 @@ class BackupMinify_Minifier {
 	 * @param int $logLevel
 	 */
 	protected function out($message,$logLevel=1) {
-		if ($this->quiteMode && $logLevel == 1) {
+		if ($this->quietMode && $logLevel == 1) {
 			return;
 		}
 		echo $message;
