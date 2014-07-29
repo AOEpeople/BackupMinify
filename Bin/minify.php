@@ -23,6 +23,7 @@ try {
 	$minifier->run();
 } catch (Exception $e) {
 	echo "ERROR: {$e->getMessage()}\n\n";
+	exit(1);
 }
 
 
