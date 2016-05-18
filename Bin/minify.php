@@ -20,6 +20,29 @@ try {
 	if ((isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) || (isset($parsedArguments['quietMode']) && $parsedArguments['quietMode'] == 1)) {
 		$minifier->setQuietMode(true);
 	}
+
+	$minifier->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+	if (isset($parsedArguments['imageconverter'])) {
+		$parsedArguments['imageconverter'] = strtolower($parsedArguments['imageconverter']);
+
+		switch ($parsedArguments['imageconverter']) {
+			case 'imagemagick':
+				$minifier->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+				break;
+			case 'im':
+				$minifier->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+				break;
+			case 'graphicsmagick':
+				$minifier->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
+				break;
+			case 'gm':
+				$minifier->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
+				break;
+			default:
+				throw new Exception("Please provide a valid image converter --imageconverter=<imageconverter>");
+		}
+	}
+
 	$minifier->run();
 } catch (Exception $e) {
 	echo "ERROR: {$e->getMessage()}\n\n";

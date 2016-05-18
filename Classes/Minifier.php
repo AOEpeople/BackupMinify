@@ -9,9 +9,12 @@
  */
 class BackupMinify_Minifier {
 
+	const IMAGE_MAGICK_CONVERT_BINARY = '/usr/bin/convert';
+	const GRAPHICS_MAGICK_CONVERT_BINARY = '/usr/bin/gm convert';
+
 	protected $sourcePath;
 	protected $targetPath;
-	protected $imageConvertBinary = '/usr/bin/convert';
+	protected $imageConvertBinary;
 	protected $imageConvertCommandTemplate = ' -quality 1 -colors 16 "%1$s" "%2$s"';
 	protected $imageFileTypes = array('jpg', 'png');
 	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
@@ -27,14 +30,26 @@ class BackupMinify_Minifier {
 	protected $durationsStack = array();
 	protected $skipExistingFiles = true;
 
+	/**
+	 * @param boolean $skipExistingFiles
+	 */
 	public function setSkipExistingFiles($skipExistingFiles) {
 		$this->skipExistingFiles = (bool) $skipExistingFiles;
 	}
 
+	/**
+	 * @param boolean $quietMode
+	 */
 	public function setQuietMode($quietMode) {
 		$this->quietMode = $quietMode;
 	}
 
+	/**
+	 * @param string $imageConvertBinary
+	 */
+	public function setImageConvertBinary($imageConvertBinary) {
+		$this->imageConvertBinary = $imageConvertBinary;
+	}
 
 	/**
 	 * Constructor
