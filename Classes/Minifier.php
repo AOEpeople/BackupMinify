@@ -10,12 +10,13 @@
 class BackupMinify_Minifier {
 
 	const IMAGE_MAGICK_CONVERT_BINARY = '/usr/bin/convert';
-	const GRAPHICS_MAGICK_CONVERT_BINARY = '/usr/bin/gm convert';
+	const GRAPHICS_MAGICK_CONVERT_BINARY = '/usr/bin/gm';
+	const GRAPHICS_MAGICK_CONVERT_BINARY_PARAM = 'convert';
 
 	protected $sourcePath;
 	protected $targetPath;
 	protected $imageConvertBinary;
-	protected $imageConvertCommandTemplate = ' -quality 1 -colors 16 "%1$s" "%2$s"';
+	protected $imageConvertCommandTemplate = '%1$s -quality 1 -colors 16 "%2$s" "%3$s"';
 	protected $imageFileTypes = array('jpg', 'png');
 	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
 	protected $totalNumberOfFiles;
@@ -267,7 +268,18 @@ class BackupMinify_Minifier {
 		$startTime = microtime(true);
 
 		// Convert...
-		exec(sprintf($this->imageConvertBinary.$this->imageConvertCommandTemplate, $filename, $targetFileName));
+		$imageConvertBinaryParam = '';
+		if ($this->imageConvertBinary === BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY) {
+			$imageConvertBinaryParam = ' ' . BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY_PARAM;
+		}
+
+		$command = sprintf(
+			$this->imageConvertBinary.$this->imageConvertCommandTemplate,
+			$imageConvertBinaryParam,
+			$filename,
+			$targetFileName
+		);
+		exec($command);
 
 		$this->putDurationOnStack(microtime(true) - $startTime);
 
