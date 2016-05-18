@@ -11,36 +11,17 @@ try {
 	if (empty($parsedArguments['target'])) {
 		throw new Exception("Please provide a target path using --target=<path>");
 	}
+	if (empty($parsedArguments['imageconverter'])) {
+		$parsedArguments['imageconverter'] = 'ImageMagick';
+	}
 
-	$minifier = new BackupMinify_Minifier($parsedArguments['source'], $parsedArguments['target']);
+	$minifier = new BackupMinify_Minifier($parsedArguments['source'], $parsedArguments['target'], $parsedArguments['imageconverter']);
 	if (isset($parsedArguments['skipExistingFiles']) && $parsedArguments['skipExistingFiles'] == 0) {
 		$minifier->setSkipExistingFiles(false);
 	}
 	if (isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) echo 'Typo detected. Please change "quiteMode" option to "quietMode".';
 	if ((isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) || (isset($parsedArguments['quietMode']) && $parsedArguments['quietMode'] == 1)) {
 		$minifier->setQuietMode(true);
-	}
-
-	$minifier->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
-	if (isset($parsedArguments['imageconverter'])) {
-		$parsedArguments['imageconverter'] = strtolower($parsedArguments['imageconverter']);
-
-		switch ($parsedArguments['imageconverter']) {
-			case 'imagemagick':
-				$minifier->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
-				break;
-			case 'im':
-				$minifier->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
-				break;
-			case 'graphicsmagick':
-				$minifier->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
-				break;
-			case 'gm':
-				$minifier->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
-				break;
-			default:
-				throw new Exception("Please provide a valid image converter --imageconverter=<imageconverter>");
-		}
 	}
 
 	$minifier->run();

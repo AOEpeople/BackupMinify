@@ -57,14 +57,33 @@ class BackupMinify_Minifier {
 	 *
 	 * @param string $sourcePath
 	 * @param string $targetPath
+	 * @param string $imageConverter
 	 * @throws Exception
 	 */
-	public function __construct($sourcePath, $targetPath) {
+	public function __construct($sourcePath, $targetPath, $imageConverter) {
 		if (empty($sourcePath)) {
 			throw new Exception("Please provide a source path using --source=<path>");
 		}
 		if (empty($targetPath)) {
 			throw new Exception("Please provide a target path using --target=<path>");
+		}
+
+		$imageConverter = strtolower($imageConverter);
+		switch ($imageConverter) {
+			case 'imagemagick':
+				$this->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+				break;
+			case 'im':
+				$this->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+				break;
+			case 'graphicsmagick':
+				$this->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
+				break;
+			case 'gm':
+				$this->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
+				break;
+			default:
+				throw new Exception("Please provide a valid image converter --imageconverter=<imageconverter>");
 		}
 
 		if (!is_executable($this->imageConvertBinary)) {
