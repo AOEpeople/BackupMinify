@@ -3,8 +3,8 @@
 /**
  * Systemstorage minifier
  *
- * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
- * @author Daniel Pötzinger <daniel.poetzinger@aoemedia.de>
+ * @author Fabrizio Branca <fabrizio.branca@aoe.com>
+ * @author Daniel Pötzinger <daniel.poetzinger@aoe.com>
  * @since 2012-06-30
  */
 class BackupMinify_Minifier {
