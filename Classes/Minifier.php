@@ -107,7 +107,7 @@ class BackupMinify_Minifier {
 	/**
 	 * Get total number of files in source path
 	 *
-	 * @return int
+	 * @return integer
 	 */
 	protected function getTotalNumberOfFiles() {
 		if (is_null($this->totalNumberOfFiles)) {
@@ -196,8 +196,8 @@ class BackupMinify_Minifier {
 	}
 
 	/**
-	 * @param $message
-	 * @param int $logLevel
+	 * @param string $message
+	 * @param integer $logLevel
 	 */
 	protected function out($message,$logLevel=1) {
 		if ($this->quietMode && $logLevel == 1) {
@@ -208,9 +208,9 @@ class BackupMinify_Minifier {
 
 	/**
 	 * @param array $pathInfo
-	 * @param $filename
-	 * @param $targetFileName
-	 * @return bool
+	 * @param string $filename
+	 * @param string $targetFileName
+	 * @return boolean
 	 */
 	protected function convertPDFFiles(array $pathInfo, $filename, $targetFileName) {
 		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && $pathInfo['extension'] != 'pdf') {
@@ -239,9 +239,9 @@ class BackupMinify_Minifier {
 
 	/**
 	 * @param array $pathInfo
-	 * @param $filename
-	 * @param $targetFileName
-	 * @return bool
+	 * @param string $filename
+	 * @param string $targetFileName
+	 * @return boolean
 	 */
 	protected function replaceMediaFilesByEmptyFile(array $pathInfo, $filename, $targetFileName) {
 		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
@@ -275,7 +275,7 @@ class BackupMinify_Minifier {
 	 * @param array $pathInfo
 	 * @param string $filename
 	 * @param string $targetFileName
-	 * @return bool
+	 * @return boolean
 	 */
 	protected function convertImageFiles(array $pathInfo, $filename, $targetFileName) {
 		if (array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->imageFileTypes)) {
@@ -317,7 +317,7 @@ class BackupMinify_Minifier {
 	}
 
 	/**
-	 * @param $duration
+	 * @param integer $duration
 	 */
 	protected function putDurationOnStack($duration) {
 		$this->durationsStack[] = $duration;
@@ -326,6 +326,9 @@ class BackupMinify_Minifier {
 		}
 	}
 
+	/**
+	 * @return boolean|float
+	 */
 	protected function getAvgDuration() {
 		$count = count($this->durationsStack);
 		if ($count > 0) {
@@ -335,6 +338,9 @@ class BackupMinify_Minifier {
 		}
 	}
 
+	/**
+	 * @return boolean|float
+	 */
 	protected function getConversionsPerMinute() {
 		$avgDuration = $this->getAvgDuration();
 		if ($avgDuration) {
@@ -344,13 +350,12 @@ class BackupMinify_Minifier {
 		}
 	}
 
+	/**
+	 * @param float $conversionsPerMinute
+	 * @return float
+	 */
 	protected function getEta($conversionsPerMinute) {
 		$filesLeft = $this->getTotalNumberOfFiles() - $this->statistics['total_files'];
 		return $filesLeft / $conversionsPerMinute;
 	}
-
-
-
 }
-
-
