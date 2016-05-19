@@ -14,7 +14,7 @@ Usage:
 Optional Parameters:
 
 ```
-   --imageconverter=GraphicsMagick  By default ImageMagick is used
+   --imageConverter=GraphicsMagick  By default ImageMagick is used
    --skipExistingFiles=0	        By default existing files are not copied to target anymore.
    --quietMode=1			        No output of log infos.
 ```

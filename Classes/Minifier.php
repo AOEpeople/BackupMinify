@@ -83,7 +83,7 @@ class BackupMinify_Minifier {
 				$this->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
 				break;
 			default:
-				throw new Exception("Please provide a valid image converter --imageconverter=<imageconverter>");
+				throw new Exception("Please provide a valid image converter --imageConverter=<imageConverter>");
 		}
 
 		if (!is_executable($this->imageConvertBinary)) {

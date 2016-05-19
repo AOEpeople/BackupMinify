@@ -11,11 +11,11 @@ try {
 	if (empty($parsedArguments['target'])) {
 		throw new Exception("Please provide a target path using --target=<path>");
 	}
-	if (empty($parsedArguments['imageconverter'])) {
-		$parsedArguments['imageconverter'] = 'ImageMagick';
+	if (empty($parsedArguments['imageConverter'])) {
+		$parsedArguments['imageConverter'] = 'ImageMagick';
 	}
 
-	$minifier = new BackupMinify_Minifier($parsedArguments['source'], $parsedArguments['target'], $parsedArguments['imageconverter']);
+	$minifier = new BackupMinify_Minifier($parsedArguments['source'], $parsedArguments['target'], $parsedArguments['imageConverter']);
 	if (isset($parsedArguments['skipExistingFiles']) && $parsedArguments['skipExistingFiles'] == 0) {
 		$minifier->setSkipExistingFiles(false);
 	}
