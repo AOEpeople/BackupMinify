@@ -11,8 +11,11 @@ try {
 	if (empty($parsedArguments['target'])) {
 		throw new Exception("Please provide a target path using --target=<path>");
 	}
+	if (empty($parsedArguments['imageConverter'])) {
+		$parsedArguments['imageConverter'] = 'ImageMagick';
+	}
 
-	$minifier = new BackupMinify_Minifier($parsedArguments['source'], $parsedArguments['target']);
+	$minifier = new BackupMinify_Minifier($parsedArguments['source'], $parsedArguments['target'], $parsedArguments['imageConverter']);
 	if (isset($parsedArguments['skipExistingFiles']) && $parsedArguments['skipExistingFiles'] == 0) {
 		$minifier->setSkipExistingFiles(false);
 	}
@@ -20,6 +23,7 @@ try {
 	if ((isset($parsedArguments['quiteMode']) && $parsedArguments['quiteMode'] == 1) || (isset($parsedArguments['quietMode']) && $parsedArguments['quietMode'] == 1)) {
 		$minifier->setQuietMode(true);
 	}
+
 	$minifier->run();
 } catch (Exception $e) {
 	echo "ERROR: {$e->getMessage()}\n\n";

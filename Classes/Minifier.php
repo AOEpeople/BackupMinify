@@ -3,16 +3,20 @@
 /**
  * Systemstorage minifier
  *
- * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
- * @author Daniel Pötzinger <daniel.poetzinger@aoemedia.de>
+ * @author Fabrizio Branca <fabrizio.branca@aoe.com>
+ * @author Daniel Pötzinger <daniel.poetzinger@aoe.com>
  * @since 2012-06-30
  */
 class BackupMinify_Minifier {
 
+	const IMAGE_MAGICK_CONVERT_BINARY = '/usr/bin/convert';
+	const GRAPHICS_MAGICK_CONVERT_BINARY = '/usr/bin/gm';
+	const GRAPHICS_MAGICK_CONVERT_BINARY_PARAM = 'convert';
+
 	protected $sourcePath;
 	protected $targetPath;
-	protected $imageConvertBinary = '/usr/bin/convert';
-	protected $imageConvertCommandTemplate = ' -quality 1 -colors 16 "%1$s" "%2$s"';
+	protected $imageConvertBinary;
+	protected $imageConvertCommandTemplate = '%1$s -quality 1 -colors 16 "%2$s" "%3$s"';
 	protected $imageFileTypes = array('jpg', 'png');
 	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
 	protected $totalNumberOfFiles;
@@ -27,28 +31,59 @@ class BackupMinify_Minifier {
 	protected $durationsStack = array();
 	protected $skipExistingFiles = true;
 
+	/**
+	 * @param boolean $skipExistingFiles
+	 */
 	public function setSkipExistingFiles($skipExistingFiles) {
 		$this->skipExistingFiles = (bool) $skipExistingFiles;
 	}
 
+	/**
+	 * @param boolean $quietMode
+	 */
 	public function setQuietMode($quietMode) {
 		$this->quietMode = $quietMode;
 	}
 
+	/**
+	 * @param string $imageConvertBinary
+	 */
+	public function setImageConvertBinary($imageConvertBinary) {
+		$this->imageConvertBinary = $imageConvertBinary;
+	}
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $sourcePath
 	 * @param string $targetPath
+	 * @param string $imageConverter
 	 * @throws Exception
 	 */
-	public function __construct($sourcePath, $targetPath) {
+	public function __construct($sourcePath, $targetPath, $imageConverter) {
 		if (empty($sourcePath)) {
 			throw new Exception("Please provide a source path using --source=<path>");
 		}
 		if (empty($targetPath)) {
 			throw new Exception("Please provide a target path using --target=<path>");
+		}
+
+		$imageConverter = strtolower($imageConverter);
+		switch ($imageConverter) {
+			case 'imagemagick':
+				$this->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+				break;
+			case 'im':
+				$this->setImageConvertBinary(BackupMinify_Minifier::IMAGE_MAGICK_CONVERT_BINARY);
+				break;
+			case 'graphicsmagick':
+				$this->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
+				break;
+			case 'gm':
+				$this->setImageConvertBinary(BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY);
+				break;
+			default:
+				throw new Exception("Please provide a valid image converter --imageConverter=<imageConverter>");
 		}
 
 		if (!is_executable($this->imageConvertBinary)) {
@@ -72,7 +107,7 @@ class BackupMinify_Minifier {
 	/**
 	 * Get total number of files in source path
 	 *
-	 * @return int
+	 * @return integer
 	 */
 	protected function getTotalNumberOfFiles() {
 		if (is_null($this->totalNumberOfFiles)) {
@@ -161,8 +196,8 @@ class BackupMinify_Minifier {
 	}
 
 	/**
-	 * @param $message
-	 * @param int $logLevel
+	 * @param string $message
+	 * @param integer $logLevel
 	 */
 	protected function out($message,$logLevel=1) {
 		if ($this->quietMode && $logLevel == 1) {
@@ -173,9 +208,9 @@ class BackupMinify_Minifier {
 
 	/**
 	 * @param array $pathInfo
-	 * @param $filename
-	 * @param $targetFileName
-	 * @return bool
+	 * @param string $filename
+	 * @param string $targetFileName
+	 * @return boolean
 	 */
 	protected function convertPDFFiles(array $pathInfo, $filename, $targetFileName) {
 		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && $pathInfo['extension'] != 'pdf') {
@@ -204,9 +239,9 @@ class BackupMinify_Minifier {
 
 	/**
 	 * @param array $pathInfo
-	 * @param $filename
-	 * @param $targetFileName
-	 * @return bool
+	 * @param string $filename
+	 * @param string $targetFileName
+	 * @return boolean
 	 */
 	protected function replaceMediaFilesByEmptyFile(array $pathInfo, $filename, $targetFileName) {
 		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
@@ -240,7 +275,7 @@ class BackupMinify_Minifier {
 	 * @param array $pathInfo
 	 * @param string $filename
 	 * @param string $targetFileName
-	 * @return bool
+	 * @return boolean
 	 */
 	protected function convertImageFiles(array $pathInfo, $filename, $targetFileName) {
 		if (array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->imageFileTypes)) {
@@ -252,7 +287,18 @@ class BackupMinify_Minifier {
 		$startTime = microtime(true);
 
 		// Convert...
-		exec(sprintf($this->imageConvertBinary.$this->imageConvertCommandTemplate, $filename, $targetFileName));
+		$imageConvertBinaryParam = '';
+		if ($this->imageConvertBinary === BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY) {
+			$imageConvertBinaryParam = ' ' . BackupMinify_Minifier::GRAPHICS_MAGICK_CONVERT_BINARY_PARAM;
+		}
+
+		$command = sprintf(
+			$this->imageConvertBinary.$this->imageConvertCommandTemplate,
+			$imageConvertBinaryParam,
+			$filename,
+			$targetFileName
+		);
+		exec($command);
 
 		$this->putDurationOnStack(microtime(true) - $startTime);
 
@@ -271,7 +317,7 @@ class BackupMinify_Minifier {
 	}
 
 	/**
-	 * @param $duration
+	 * @param integer $duration
 	 */
 	protected function putDurationOnStack($duration) {
 		$this->durationsStack[] = $duration;
@@ -280,6 +326,9 @@ class BackupMinify_Minifier {
 		}
 	}
 
+	/**
+	 * @return boolean|float
+	 */
 	protected function getAvgDuration() {
 		$count = count($this->durationsStack);
 		if ($count > 0) {
@@ -289,6 +338,9 @@ class BackupMinify_Minifier {
 		}
 	}
 
+	/**
+	 * @return boolean|float
+	 */
 	protected function getConversionsPerMinute() {
 		$avgDuration = $this->getAvgDuration();
 		if ($avgDuration) {
@@ -298,13 +350,12 @@ class BackupMinify_Minifier {
 		}
 	}
 
+	/**
+	 * @param float $conversionsPerMinute
+	 * @return float
+	 */
 	protected function getEta($conversionsPerMinute) {
 		$filesLeft = $this->getTotalNumberOfFiles() - $this->statistics['total_files'];
 		return $filesLeft / $conversionsPerMinute;
 	}
-
-
-
 }
-
-
