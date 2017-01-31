@@ -213,9 +213,15 @@ class BackupMinify_Minifier {
 	 * @return boolean
 	 */
 	protected function convertPDFFiles(array $pathInfo, $filename, $targetFileName) {
-		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && $pathInfo['extension'] != 'pdf') {
-			return false;
-		}
+        // File has no extension
+        if (!array_key_exists('extension', $pathInfo)) {
+            return false;
+        }
+
+        // File is no pdf file
+        if (!$pathInfo['extension'] != 'pdf') {
+            return false;
+        }
 
 		$this->statistics['converted']++;
 
@@ -244,9 +250,15 @@ class BackupMinify_Minifier {
 	 * @return boolean
 	 */
 	protected function replaceMediaFilesByEmptyFile(array $pathInfo, $filename, $targetFileName) {
-		if (is_array($pathInfo) && array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
-			return false;
-		}
+        // File has no extension
+        if (!array_key_exists('extension', $pathInfo)) {
+            return false;
+        }
+
+        // File is no supported media file
+        if (!in_array(strtolower($pathInfo['extension']), $this->mediaFileTypesToBeReplacedByEmptyFile)) {
+            return false;
+        }
 
 		$this->statistics['converted']++;
 
@@ -278,7 +290,13 @@ class BackupMinify_Minifier {
 	 * @return boolean
 	 */
 	protected function convertImageFiles(array $pathInfo, $filename, $targetFileName) {
-		if (array_key_exists('extension', $pathInfo) && !in_array(strtolower($pathInfo['extension']), $this->imageFileTypes)) {
+		// File has no extension
+	    if (!array_key_exists('extension', $pathInfo)) {
+		    return false;
+        }
+
+        // File is no supported image
+	    if (!in_array(strtolower($pathInfo['extension']), $this->imageFileTypes)) {
 			return false;
 		}
 
