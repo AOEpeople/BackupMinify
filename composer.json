@@ -8,5 +8,5 @@
             "email": "dev@aoe.com"
         }
     ],
-    "require": {}
+    "bin": ["Bin/minify.php"]
 }
