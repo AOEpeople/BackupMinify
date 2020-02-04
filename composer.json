@@ -1,0 +1,12 @@
+{
+    "name": "aoepeople/backup-minify",
+    "description": "Small tool for minifying backup assets",
+    "type": "library",
+    "authors": [
+        {
+            "name": "AOE GmbH",
+            "email": "dev@aoe.com"
+        }
+    ],
+    "require": {}
+}
