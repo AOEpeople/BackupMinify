@@ -13,10 +13,11 @@ class BackupMinify_Minifier {
 	const GRAPHICS_MAGICK_CONVERT_BINARY = '/usr/bin/gm';
 	const GRAPHICS_MAGICK_CONVERT_BINARY_PARAM = 'convert';
 
+
 	protected $sourcePath;
 	protected $targetPath;
 	protected $imageConvertBinary;
-	protected $imageConvertCommandTemplate = '%1$s -quality 1 -colors 16 "%2$s" "%3$s"';
+	protected $imageConvertCommandTemplate = '%1$s +dither -depth 8 -colors 16 "%2$s" "%3$s"';
 	protected $imageFileTypes = array('jpg', 'png');
 	protected $mediaFileTypesToBeReplacedByEmptyFile = array('mp4', 'mpeg', 'avi');
 	protected $totalNumberOfFiles;
